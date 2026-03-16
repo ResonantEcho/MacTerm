@@ -12,7 +12,7 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-accent);
   border-radius: var(--radius-lg);
-  width: 400px;
+  width: 420px;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
@@ -67,7 +67,6 @@
   color: var(--text-secondary);
 }
 .proto-tab:hover { color: var(--text-primary); border-color: var(--border-accent); }
-
 .proto-selected {
   border-color: var(--accent) !important;
   color: var(--accent) !important;
@@ -84,18 +83,14 @@
 }
 
 .modal-row-2 {
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
   gap: 10px;
   align-items: flex-start;
 }
+.modal-row-2 > *:first-child { flex: 1; }
 
 .modal-field { display: flex; flex-direction: column; gap: 4px; }
-
-.modal-label {
-  font-size: 11px;
-  color: var(--text-secondary);
-}
+.modal-label { font-size: 11px; color: var(--text-secondary); }
 
 .modal-input {
   width: 100%;
@@ -111,10 +106,26 @@
 .modal-input:focus { border-color: var(--accent); }
 .input-error { border-color: var(--accent-red) !important; }
 
-.modal-field-error {
+.modal-field-error { font-size: 11px; color: var(--accent-red); }
+
+.modal-hint {
   font-size: 11px;
-  color: var(--accent-red);
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.5;
 }
+
+.modal-show-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 0 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.modal-show-btn:hover { color: var(--text-primary); }
 
 .modal-footer {
   display: flex;
