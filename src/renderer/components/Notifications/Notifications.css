@@ -1,0 +1,78 @@
+.notif-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.notif-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-accent);
+  background: var(--bg-surface);
+  min-width: 260px;
+  max-width: 380px;
+  cursor: pointer;
+  pointer-events: all;
+  position: relative;
+  overflow: hidden;
+  animation: notif-in 0.2s ease-out;
+}
+
+@keyframes notif-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.notif-icon {
+  font-size: 13px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.notif-message {
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Type colours */
+.notif-success .notif-icon { color: var(--accent);       background: var(--accent-dim); }
+.notif-error   .notif-icon { color: var(--accent-red);   background: rgba(224,85,85,0.15); }
+.notif-warn    .notif-icon { color: var(--accent-amber);  background: rgba(240,160,48,0.15); }
+.notif-info    .notif-icon { color: var(--accent-blue);  background: rgba(77,158,247,0.15); }
+
+.notif-success { border-color: rgba(46,204,138,0.25); }
+.notif-error   { border-color: rgba(224,85,85,0.25); }
+.notif-warn    { border-color: rgba(240,160,48,0.25); }
+.notif-info    { border-color: rgba(77,158,247,0.25); }
+
+/* Progress bar */
+.notif-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--accent);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.notif-success .notif-progress { background: var(--accent); }
+.notif-error   .notif-progress { background: var(--accent-red); }
+.notif-warn    .notif-progress { background: var(--accent-amber); }
+.notif-info    .notif-progress { background: var(--accent-blue); }

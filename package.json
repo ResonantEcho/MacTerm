@@ -1,6 +1,6 @@
 {
   "name": "macterm",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "A MobaXterm-inspired SSH/RDP/VNC client for macOS",
   "main": "src/main/index.js",
   "homepage": "./",
@@ -8,9 +8,15 @@
     "start": "concurrently \"npm run start:renderer\" \"wait-on http://localhost:3000 && npm run start:electron\"",
     "start:renderer": "react-scripts start",
     "start:electron": "NODE_ENV=development electron .",
-    "build": "react-scripts build && electron-builder",
+    "build": "npm run build:renderer && npm run build:electron",
     "build:renderer": "react-scripts build",
+    "build:electron": "electron-builder",
+    "build:mac": "electron-builder --mac --universal",
+    "build:mac:arm64": "electron-builder --mac --arm64",
+    "build:mac:x64": "electron-builder --mac --x64",
+    "build:unsigned": "SKIP_NOTARIZE=true electron-builder --mac --universal",
     "pack": "electron-builder --dir",
+    "create-icns": "bash scripts/create-icns.sh",
     "test": "react-scripts test"
   },
   "dependencies": {
@@ -26,6 +32,7 @@
     "keytar": "^7.9.0"
   },
   "devDependencies": {
+    "@electron/notarize": "^2.3.0",
     "concurrently": "^8.2.0",
     "electron": "^28.0.0",
     "electron-builder": "^24.6.4",
@@ -35,18 +42,65 @@
   "build": {
     "appId": "com.macterm.app",
     "productName": "MacTerm",
+    "copyright": "Copyright © 2026 ResonantEcho",
+    "afterSign": "scripts/notarize.js",
     "mac": {
-      "category": "public.app-category.utilities",
-      "target": ["dmg", "zip"],
-      "icon": "assets/icon.icns"
+      "category": "public.app-category.developer-tools",
+      "icon": "assets/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "assets/entitlements.mac.plist",
+      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        },
+        {
+          "target": "zip",
+          "arch": ["universal"]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "${productName} ${version}",
+      "icon": "assets/icon.icns",
+      "background": "assets/dmg-background.png",
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 140,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "iconSize": 100
     },
     "files": [
       "build/**/*",
       "src/main/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "!node_modules/**/{CHANGELOG.md,README.md,readme.md,test,__tests__,tests,powered-test,example,examples,*.d.ts}",
+      "!node_modules/.cache"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "ResonantEcho",
+      "repo": "MacTerm"
     }
   },
   "browserslist": {

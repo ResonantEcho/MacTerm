@@ -1,0 +1,199 @@
+.tunnel-manager {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tunnel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.tunnel-title {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.tunnel-add-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: none;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.tunnel-add-btn:hover:not(:disabled) { background: rgba(46,204,138,0.3); }
+.tunnel-add-btn:disabled { opacity: 0.3; cursor: default; }
+
+.tunnel-note {
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.tunnel-list {
+  overflow-y: auto;
+  max-height: 180px;
+}
+
+.tunnel-item {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tunnel-item-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tunnel-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-active   { background: var(--accent); }
+.dot-inactive { background: var(--text-muted); }
+.dot-error    { background: var(--accent-red); }
+
+.tunnel-item-label {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tunnel-item-type {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.07);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tunnel-item-actions {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.tunnel-action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+.tunnel-action-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+}
+.tunnel-action-btn:disabled { opacity: 0.3; cursor: default; }
+.tunnel-action-danger:hover:not(:disabled) { color: var(--accent-red); }
+
+.tunnel-item-detail {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 2px;
+  padding-left: 12px;
+}
+
+.tunnel-item-error {
+  font-size: 10px;
+  color: var(--accent-red);
+  padding-left: 12px;
+  margin-top: 2px;
+}
+
+/* Form */
+.tunnel-form {
+  padding: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tunnel-form-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tunnel-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tunnel-form-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tunnel-err { color: var(--accent-red); font-size: 10px; }
+
+.tunnel-input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 12px;
+  padding: 5px 7px;
+  outline: none;
+  font-family: var(--font-ui);
+}
+.tunnel-input:focus { border-color: var(--accent); }
+.tunnel-input-err   { border-color: var(--accent-red) !important; }
+
+.tunnel-form-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.tunnel-btn-cancel {
+  background: transparent;
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 4px 10px;
+}
+.tunnel-btn-cancel:hover { color: var(--text-primary); }
+
+.tunnel-btn-add {
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #0a1a10;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 12px;
+}
+.tunnel-btn-add:hover { background: #3ade9a; }

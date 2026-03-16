@@ -1,0 +1,125 @@
+.split-pane {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
+
+.split-pane-horizontal {
+  flex-direction: row;
+}
+
+.split-pane-vertical {
+  flex-direction: column;
+}
+
+/* Pane containers */
+.split-pane-primary,
+.split-pane-secondary {
+  display: flex;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+  flex-shrink: 0;
+}
+
+/* ── Divider ────────────────────────────────────────────────────────────────── */
+
+.split-divider {
+  position: relative;
+  background: var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.15s;
+}
+
+.split-divider-horizontal {
+  width: 5px;
+  cursor: col-resize;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.split-divider-vertical {
+  height: 5px;
+  cursor: row-resize;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.split-divider:hover,
+.split-dragging .split-divider {
+  background: var(--accent-dim);
+}
+
+/* The visible grip dots */
+.split-divider-handle {
+  flex-shrink: 0;
+}
+
+.split-divider-horizontal .split-divider-handle {
+  width: 3px;
+  height: 30px;
+  border-radius: 2px;
+  background: var(--border-accent);
+  transition: background 0.15s;
+}
+
+.split-divider-vertical .split-divider-handle {
+  height: 3px;
+  width: 30px;
+  border-radius: 2px;
+  background: var(--border-accent);
+  transition: background 0.15s;
+}
+
+.split-divider:hover .split-divider-handle,
+.split-dragging .split-divider-handle {
+  background: var(--accent);
+}
+
+/* Close button — appears on hover */
+.split-close-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-accent);
+  color: var(--text-muted);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.split-divider:hover .split-close-btn {
+  opacity: 1;
+}
+
+.split-close-btn:hover {
+  background: var(--accent-red);
+  border-color: var(--accent-red);
+  color: #fff;
+}
+
+/* Prevent text selection while dragging */
+.split-dragging * {
+  user-select: none !important;
+  pointer-events: none;
+}
+.split-dragging .split-divider {
+  pointer-events: all;
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- Allow JIT compilation (required for Electron/V8) -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+
+    <!-- Allow unsigned executable memory (required for Electron) -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+
+    <!-- Allow DYLD environment variables (Electron uses these) -->
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
+    <true/>
+
+    <!-- Disable library validation so native modules load -->
+    <key>com.apple.security.cs.disable-library-validation</key>
+    <true/>
+
+    <!-- Network access for SSH, RDP, VNC -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- File system access for SFTP downloads/uploads -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- Keychain access for credential storage -->
+    <key>keychain-access-groups</key>
+    <array>
+      <string>$(AppIdentifierPrefix)com.macterm.app</string>
+    </array>
+  </dict>
+</plist>
