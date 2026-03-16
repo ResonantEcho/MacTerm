@@ -1,0 +1,157 @@
+.vnc-session {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #111316;
+}
+
+/* Toolbar */
+.vnc-toolbar {
+  height: 36px;
+  background: var(--bg-tabbar);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.vnc-status-dot-wrap {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.vnc-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.vnc-status-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.vnc-tb-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
+}
+
+.vnc-tb-spacer { flex: 1; }
+
+.vnc-tb-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  flex-shrink: 0;
+}
+.vnc-tb-toggle input { cursor: pointer; accent-color: var(--accent); }
+.vnc-tb-toggle:hover { color: var(--text-primary); }
+
+.vnc-tb-btn {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 3px 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.vnc-tb-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+.vnc-tb-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* Canvas */
+.vnc-canvas-wrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+/* noVNC injects a canvas — make it fill the container */
+.vnc-canvas-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Overlay states */
+.vnc-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--bg-terminal);
+  z-index: 10;
+}
+
+.vnc-overlay-spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-top-color: var(--accent-amber);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.vnc-overlay-icon {
+  font-size: 32px;
+  color: var(--accent-red);
+}
+
+.vnc-overlay-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.vnc-overlay-error {
+  font-size: 12px;
+  color: var(--accent-red);
+  font-family: var(--font-mono);
+  text-align: center;
+  max-width: 400px;
+}
+
+.vnc-overlay-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+.vnc-reconnect-btn {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  color: var(--accent);
+  font-size: 12px;
+  padding: 6px 18px;
+  margin-top: 8px;
+}
+.vnc-reconnect-btn:hover { background: rgba(46,204,138,0.25); }
