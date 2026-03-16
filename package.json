@@ -1,0 +1,54 @@
+{
+  "name": "macterm",
+  "version": "0.1.0",
+  "description": "A MobaXterm-inspired SSH/RDP/VNC client for macOS",
+  "main": "src/main/index.js",
+  "homepage": "./",
+  "scripts": {
+    "start": "concurrently \"npm run start:renderer\" \"wait-on http://localhost:3000 && npm run start:electron\"",
+    "start:renderer": "react-scripts start",
+    "start:electron": "NODE_ENV=development electron .",
+    "build": "react-scripts build && electron-builder",
+    "build:renderer": "react-scripts build",
+    "pack": "electron-builder --dir",
+    "test": "react-scripts test"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ssh2": "^1.15.0",
+    "@xterm/xterm": "^5.3.0",
+    "@xterm/addon-fit": "^0.8.0",
+    "@xterm/addon-web-links": "^0.9.0",
+    "electron-store": "^8.1.0",
+    "keytar": "^7.9.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.6.4",
+    "react-scripts": "5.0.1",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.macterm.app",
+    "productName": "MacTerm",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": ["dmg", "zip"],
+      "icon": "assets/icon.icns"
+    },
+    "files": [
+      "build/**/*",
+      "src/main/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
+  },
+  "browserslist": {
+    "production": ["last 1 electron version"],
+    "development": ["last 1 electron version"]
+  }
+}
