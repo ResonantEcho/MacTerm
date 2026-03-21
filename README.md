@@ -11,57 +11,32 @@
 
 ## Why MacTerm?
 
-MobaXterm is the gold standard for Windows users who need SSH, RDP, and VNC in a single app — but it has no macOS version. Existing Mac alternatives either do one protocol well or feel like ports from another era. MacTerm is built ground-up for macOS with a clean dark UI, tabbed sessions, a live SFTP browser, and a built-in credential vault.
-
----
-
-## Screenshots
-
-> Beta screenshots — UI is functional and mostly final.
-
-| Session Manager | SSH + SFTP | Settings |
-|---|---|---|
-| _(sidebar with grouped connections)_ | _(xterm.js terminal with SFTP panel)_ | _(light/dark/system theme picker)_ |
+MobaXterm is the gold standard for Windows users who need SSH, RDP, and VNC in a single app — but it has no macOS version. MacTerm fills that gap with a clean native-feeling UI, tabbed sessions, a live SFTP browser, and a built-in credential vault.
 
 ---
 
 ## Features
 
-### Protocols
-- **SSH** — Full xterm.js terminal, AES-256 encryption, SSH key and password auth, ssh-agent forwarding
-- **SFTP** — Side-panel file browser alongside SSH sessions, upload/download via native dialogs, new folder, delete
-- **VNC** — Live remote desktop rendered inside the app using noVNC, scale/view-only/Ctrl+Alt+Del controls
-- **RDP** — Connects via FreeRDP (Homebrew), opens a native macOS window, full session log
+- **SSH** — Full xterm.js terminal, AES-256, SSH key and password auth, ssh-agent forwarding, auto-reconnect
+- **SFTP** — Side-panel file browser alongside SSH, upload/download via native dialogs
+- **VNC** — Live remote desktop via noVNC rendered inside the app window
+- **RDP** — Via FreeRDP subprocess (install with `brew install freerdp`)
+- **Tabbed sessions** — Multiple connections open simultaneously, `Cmd+1–9` to switch
+- **Split panes** — `Cmd+D` to open any connection side-by-side, draggable divider
+- **Command palette** — `Cmd+P` fuzzy search across all saved connections
+- **Credential vault** — Locally encrypted password and SSH key storage
+- **Import/Export** — MacTerm JSON, MobaXterm `.mobalink`, CSV
+- **Themes** — Dark, Light, System (follows macOS appearance)
+- **SSH port tunnels** — Per-profile local and remote port forwards
+- **Settings panel** — Font, cursor, reconnect behavior, sidebar width, and more
 
-### Session Management
-- Tabbed interface — multiple sessions open simultaneously, `Cmd+1–9` to switch
-- Sidebar with collapsible groups (Production, Staging, Local VMs, etc.)
-- Right-click context menu on any connection
-- Split panes — `Cmd+D` to open any connection side-by-side with the current one, draggable divider
+### Keyboard shortcuts
 
-### Credential Vault
-- Locally encrypted storage for passwords and SSH key paths
-- Vault credentials can be linked directly to connection profiles
-- Copy password to clipboard with one click
-
-### Import / Export
-- Export connections to JSON
-- Import from MacTerm JSON, MobaXterm `.mobalink` files, or CSV
-- Preview dialog before confirming import
-
-### Settings
-- Terminal font family, size, line height, cursor style, scrollback
-- **Themes** — Dark, Light, or System (follows macOS appearance automatically)
-- Auto-reconnect on dropped SSH sessions with configurable backoff
-- Per-profile SSH port tunnels (local and remote forwards)
-- Default protocol, keep-alive interval, sidebar width
-
-### Keyboard Shortcuts
 | Shortcut | Action |
 |---|---|
 | `Cmd+T` | New connection |
 | `Cmd+W` | Close tab |
-| `Cmd+P` | Command palette (fuzzy search connections) |
+| `Cmd+P` | Command palette |
 | `Cmd+K` | Clear terminal |
 | `Cmd+B` | Toggle SFTP browser |
 | `Cmd+D` | Split pane |
@@ -71,79 +46,30 @@ MobaXterm is the gold standard for Windows users who need SSH, RDP, and VNC in a
 
 ---
 
-## Installation
-
-### Beta (pre-release)
-
-Download the latest DMG from the [Releases](https://github.com/ResonantEcho/MacTerm/releases) page.
-
-1. Download `MacTerm-0.5.0-beta.1-universal.dmg`
-2. Open the DMG and drag **MacTerm** to your Applications folder
-3. On first launch, macOS may show an "unverified developer" warning — right-click the app and choose **Open** to proceed
-
-> The beta is unsigned. A notarized release will follow once out of beta.
-
-### RDP prerequisite
-
-RDP sessions require FreeRDP. Install it with Homebrew:
-
-```bash
-brew install freerdp
-```
-
-MacTerm will detect whether it's installed and show an install guide if not.
-
----
-
-## Building from source
+## Quick start
 
 ```bash
 git clone https://github.com/ResonantEcho/MacTerm.git
 cd MacTerm
 npm install
-npm start          # development mode
+npm start
 ```
 
-To build a DMG:
+### Prerequisites
 
-```bash
-npm run build:unsigned    # no Apple signing required
-# Output: dist/MacTerm-0.5.0-universal.dmg
-```
-
-See [BUILD.md](BUILD.md) for the full guide including signed/notarized builds and GitHub Actions CI.
+- **Node.js 18+** — install via [nodejs.org](https://nodejs.org) or `brew install node`
+- **RDP only:** `brew install freerdp`
 
 ---
 
-## Project structure
+## Building a DMG
 
+```bash
+npm run build:unsigned    # local DMG, no Apple account needed
+# Output: dist/MacTerm-0.5.0-universal.dmg
 ```
-MacTerm/
-├── src/
-│   ├── main/                     Electron main process
-│   │   ├── index.js              Window, IPC handlers, app menu
-│   │   ├── preload.js            Secure renderer ↔ main bridge
-│   │   ├── sshManager.js        SSH + SFTP sessions (ssh2)
-│   │   ├── vncManager.js        WebSocket proxy for VNC (noVNC)
-│   │   ├── rdpManager.js        FreeRDP subprocess manager
-│   │   ├── settingsManager.js   Persistent settings store
-│   │   └── importExport.js      JSON / MobaXterm / CSV import-export
-│   └── renderer/                 React frontend
-│       ├── App.js                Root: tabs, sessions, theme, shortcuts
-│       ├── hooks/                useTheme, useSettings, useAutoReconnect
-│       ├── styles/               global.css, themes.css (dark/light/system)
-│       └── components/
-│           ├── Sidebar/          Connection list + groups
-│           ├── TabBar/           Session tabs
-│           ├── Terminal/         SSH, VNC, RDP, SplitPane
-│           ├── FileBrowser/      Live SFTP panel
-│           ├── Vault/            Credential manager
-│           ├── CommandPalette/   Cmd+P fuzzy search
-│           └── Settings/         Settings panel + ThemePicker
-├── assets/                       Icons, entitlements
-├── scripts/                      notarize.js, create-icns.sh
-└── .github/workflows/            CI build + release automation
-```
+
+See [BUILD.md](BUILD.md) for signed/notarized builds and GitHub Actions CI setup.
 
 ---
 
@@ -151,27 +77,13 @@ MacTerm/
 
 | Phase | Status | Description |
 |---|---|---|
-| 1 | ✅ Complete | UI scaffold — sidebar, tabs, session manager, vault |
-| 2 | ✅ Complete | Real SSH via `ssh2`, live SFTP browser |
-| 3 | ✅ Complete | VNC via noVNC/websockify, RDP via FreeRDP |
-| 4 | ✅ Complete | Settings, keyboard shortcuts, command palette, import/export, auto-reconnect, SSH tunnels |
-| 5 | ✅ Complete | Light/dark/system themes, split panes, DMG build pipeline |
-| 6 | 🔜 Planned | Session recording & playback, Telnet, local terminal tab |
-| 7 | 🔜 Planned | Plugin system, custom themes, SSH jump hosts |
-
----
-
-## Contributing
-
-Issues and pull requests are welcome. Please open an issue first for large changes so we can discuss the approach.
-
-```bash
-# Fork the repo, then:
-git clone https://github.com/YOUR_USERNAME/MacTerm.git
-cd MacTerm
-npm install
-npm start
-```
+| 1 | ✅ | UI scaffold — sidebar, tabs, vault |
+| 2 | ✅ | Real SSH + SFTP |
+| 3 | ✅ | VNC + RDP |
+| 4 | ✅ | Settings, shortcuts, command palette, import/export, auto-reconnect |
+| 5 | ✅ | Themes, split panes, DMG pipeline |
+| 6 | 🔜 | Session recording, Telnet, local terminal tab |
+| 7 | 🔜 | Plugin system, SSH jump hosts |
 
 ---
 
@@ -180,16 +92,137 @@ npm start
 | Layer | Technology |
 |---|---|
 | Desktop shell | Electron 28 |
-| UI framework | React 18 |
-| Terminal emulator | xterm.js 5 |
+| UI | React 18 |
+| Terminal | xterm.js 6 |
 | SSH / SFTP | ssh2 |
-| VNC | react-vnc (noVNC) + custom websockify proxy |
+| VNC | @novnc/novnc + custom websockify proxy |
 | RDP | FreeRDP (xfreerdp subprocess) |
-| Data store | electron-store (AES-256 encrypted) |
-| Build & packaging | electron-builder, universal binary (arm64 + x64) |
+| Storage | electron-store (AES-256 encrypted) |
+| Build | electron-builder, universal binary (arm64 + x64) |
 
 ---
 
+## Debugging notes
+
+This section documents issues encountered during initial setup and their fixes. Useful if you're setting up from scratch or hit the same errors.
+
+### 1. `@xterm/addon-fit` version not found
+
+**Error:** `npm error notarget No matching version found for @xterm/addon-fit@^0.8.0`
+
+**Cause:** The xterm.js packages were bumped to new major versions after the project was initially written.
+
+**Fix:** Updated `package.json` to current versions:
+```json
+"@xterm/xterm": "^6.0.0",
+"@xterm/addon-fit": "^0.11.0",
+"@xterm/addon-web-links": "^0.12.0"
+```
+
+---
+
+### 2. `react-vnc` peer dependency conflict
+
+**Error:** `peer react@">=19.0.0" from react-vnc@3.2.0`
+
+**Cause:** `react-vnc` v3.2.0 updated its peer dependency to require React 19, but MacTerm uses React 18.
+
+**Fix:** Removed `react-vnc` entirely and replaced it with `@novnc/novnc` directly. `VNCSession.js` now dynamically imports `@novnc/novnc/core/rfb.js` and manages the RFB connection directly — which is exactly what `react-vnc` was doing internally anyway.
+
+---
+
+### 3. `concurrently: command not found`
+
+**Error:** `sh: concurrently: command not found` when running `npm start`
+
+**Cause:** `npm install` was failing before completing (due to the version errors above), so dev dependencies like `concurrently` were never installed.
+
+**Fix:** Fixed the dependency versions first, then `npm install` completed successfully and `concurrently` was available.
+
+---
+
+### 4. `src/index.js` not found
+
+**Error:** `Could not find a required file. Name: index.js. Searched in: /path/to/src`
+
+**Cause:** `react-scripts` always looks for `src/index.js` as the entry point. Our project had the React entry point at `src/renderer/index.js` instead.
+
+**Fix:** Created `src/index.js` at the root of `src/` that bootstraps React and imports from the renderer:
+```js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './renderer/styles/global.css';
+import App from './renderer/App';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<React.StrictMode><App /></React.StrictMode>);
+```
+
+---
+
+### 5. `window.macterm.settings.get is not a function`
+
+**Error:** Runtime error in browser — `_window$macterm.settings.get is not a function`
+
+**Cause:** Two separate issues compounded each other:
+
+**5a. Preload API mismatch** — The `preload.js` was exposing `settings.getAll` and `settings.reset` instead of `settings.get` and `settings.save`. So `window.macterm.settings.get` was `undefined`.
+
+**Fix:** Rewrote `preload.js` to expose `settings.get` and `settings.save` matching what the app expected.
+
+**5b. Main process handler mismatch** — The main process had `ipcMain.handle('settings:get-all', ...)` but the preload was invoking `settings:get`. After fixing the preload, the main process had no handler for `settings:get`.
+
+**Fix:** Updated `src/main/index.js` to register `ipcMain.handle('settings:get', ...)` and `ipcMain.handle('settings:save', ...)` with the correct signatures.
+
+---
+
+### 6. Duplicate IPC handler registration
+
+**Error:** `Error: Attempted to register a second handler for 'settings:get'`
+
+**Cause:** During debugging, a `cat >>` command was used to append new handlers to `index.js`. After the main handlers were also fixed in place, both sets were present, causing Electron to throw on the duplicate.
+
+**Fix:** Used Python to find and remove the appended duplicate block:
+```bash
+python3 -c "
+import re
+path = 'src/main/index.js'
+with open(path) as f: c = f.read()
+c = re.sub(r'\n// ── Settings IPC \(added fix\).*', '', c, flags=re.DOTALL)
+with open(path, 'w') as f: f.write(c)
+"
+```
+
+---
+
+### 7. `cross-env` needed for Windows compatibility
+
+**Cause:** `NODE_ENV=development electron .` is Unix-only syntax. On Windows PowerShell it fails silently.
+
+**Fix:** Added `cross-env` as a dev dependency and updated scripts:
+```json
+"start:electron": "cross-env NODE_ENV=development electron ."
+```
+
+---
+
+### 8. PowerShell execution policy
+
+**Error:** `npm.ps1 cannot be loaded because running scripts is disabled on this system`
+
+**Platform:** Windows PowerShell only.
+
+**Fix:**
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Issues and PRs welcome.
+
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).

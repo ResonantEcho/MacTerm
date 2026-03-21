@@ -3,32 +3,47 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('macterm', {
 
   profiles: {
-    getAll: ()   => ipcRenderer.invoke('profiles:get-all'),
-    save:   (p)  => ipcRenderer.invoke('profiles:save', p),
-    delete: (id) => ipcRenderer.invoke('profiles:delete', id),
+    getAll:  ()         => ipcRenderer.invoke('profiles:get-all'),
+    save:    (p)        => ipcRenderer.invoke('profiles:save', p),
+    delete:  (id)       => ipcRenderer.invoke('profiles:delete', id),
+    export:  (profiles) => ipcRenderer.invoke('profiles:export', profiles),
+    import:  ()         => ipcRenderer.invoke('profiles:import'),
   },
 
   vault: {
-    getAll: ()   => ipcRenderer.invoke('vault:get-all'),
-    save:   (c)  => ipcRenderer.invoke('vault:save', c),
-    delete: (id) => ipcRenderer.invoke('vault:delete', id),
+    getAll: ()    => ipcRenderer.invoke('vault:get-all'),
+    save:   (c)   => ipcRenderer.invoke('vault:save', c),
+    delete: (id)  => ipcRenderer.invoke('vault:delete', id),
   },
 
   settings: {
-    getAll: ()           => ipcRenderer.invoke('settings:get-all'),
-    save:   (key, value) => ipcRenderer.invoke('settings:save', { key, value }),
-    reset:  ()           => ipcRenderer.invoke('settings:reset'),
+    get:  ()        => ipcRenderer.invoke('settings:get'),
+    save: (partial) => ipcRenderer.invoke('settings:save', partial),
+  },
+
+  tunnels: {
+    get:    (profileId) => ipcRenderer.invoke('tunnels:get', profileId),
+    save:   (tunnel)    => ipcRenderer.invoke('tunnels:save', tunnel),
+    delete: (id)        => ipcRenderer.invoke('tunnels:delete', id),
   },
 
   ssh: {
-    connect:     (sid, profile)    => ipcRenderer.invoke('ssh:connect', { sessionId: sid, profile }),
-    sendData:    (sid, data)       => ipcRenderer.send('ssh:data',   { sessionId: sid, data }),
-    resize:      (sid, cols, rows) => ipcRenderer.send('ssh:resize', { sessionId: sid, cols, rows }),
-    disconnect:  (sid)             => ipcRenderer.invoke('ssh:disconnect', sid),
-    openTunnel:  (sid, tunnel)     => ipcRenderer.invoke('ssh:open-tunnel',  { sessionId: sid, tunnel }),
-    closeTunnel: (sid, tunnelId)   => ipcRenderer.invoke('ssh:close-tunnel', { sessionId: sid, tunnelId }),
-    onData:  (sid, cb) => { const fn = (_, d) => cb(d); const ch = `ssh:data:${sid}`;   ipcRenderer.on(ch, fn); return () => ipcRenderer.removeListener(ch, fn); },
-    onClose: (sid, cb) => { const fn = (_, r) => cb(r); const ch = `ssh:closed:${sid}`; ipcRenderer.on(ch, fn); return () => ipcRenderer.removeListener(ch, fn); },
+    connect:    (sessionId, profile) => ipcRenderer.invoke('ssh:connect', { sessionId, profile }),
+    sendData:   (sessionId, data)    => ipcRenderer.send('ssh:data', { sessionId, data }),
+    resize:     (sessionId, c, r)    => ipcRenderer.send('ssh:resize', { sessionId, cols: c, rows: r }),
+    disconnect: (sessionId)          => ipcRenderer.invoke('ssh:disconnect', sessionId),
+    onData: (sessionId, cb) => {
+      const ch = `ssh:data:${sessionId}`;
+      const fn = (_, d) => cb(d);
+      ipcRenderer.on(ch, fn);
+      return () => ipcRenderer.removeListener(ch, fn);
+    },
+    onClose: (sessionId, cb) => {
+      const ch = `ssh:closed:${sessionId}`;
+      const fn = (_, r) => cb(r);
+      ipcRenderer.on(ch, fn);
+      return () => ipcRenderer.removeListener(ch, fn);
+    },
   },
 
   sftp: {
@@ -40,23 +55,49 @@ contextBridge.exposeInMainWorld('macterm', {
   },
 
   vnc: {
-    start: (sid, host, port, pwd) => ipcRenderer.invoke('vnc:start', { sessionId: sid, host, port, password: pwd }),
-    stop:  (sid)                   => ipcRenderer.invoke('vnc:stop', sid),
+    start: (sessionId, host, port, password) =>
+      ipcRenderer.invoke('vnc:start', { sessionId, host, port, password }),
+    stop: (sessionId) => ipcRenderer.invoke('vnc:stop', sessionId),
   },
 
   rdp: {
-    detect: ()             => ipcRenderer.invoke('rdp:detect'),
-    start:  (sid, profile) => ipcRenderer.invoke('rdp:start', { sessionId: sid, profile }),
-    stop:   (sid)          => ipcRenderer.invoke('rdp:stop', sid),
-    onOutput: (sid, cb) => { const fn = (_, d) => cb(d); const ch = `rdp:output:${sid}`; ipcRenderer.on(ch, fn); return () => ipcRenderer.removeListener(ch, fn); },
-    onClose:  (sid, cb) => { const fn = (_, r) => cb(r); const ch = `rdp:closed:${sid}`; ipcRenderer.on(ch, fn); return () => ipcRenderer.removeListener(ch, fn); },
+    detect:   ()                   => ipcRenderer.invoke('rdp:detect'),
+    start:    (sessionId, profile) => ipcRenderer.invoke('rdp:start', { sessionId, profile }),
+    stop:     (sessionId)          => ipcRenderer.invoke('rdp:stop', sessionId),
+    onOutput: (sessionId, cb) => {
+      const ch = `rdp:output:${sessionId}`;
+      const fn = (_, d) => cb(d);
+      ipcRenderer.on(ch, fn);
+      return () => ipcRenderer.removeListener(ch, fn);
+    },
+    onClose: (sessionId, cb) => {
+      const ch = `rdp:closed:${sessionId}`;
+      const fn = (_, r) => cb(r);
+      ipcRenderer.on(ch, fn);
+      return () => ipcRenderer.removeListener(ch, fn);
+    },
   },
 
-  onMenu: (channel, cb) => {
-    const fn = () => cb();
-    ipcRenderer.on(channel, fn);
-    return () => ipcRenderer.removeListener(channel, fn);
+  shell: {
+    openExternal: (url) => ipcRenderer.invoke('shell:open-external', url),
   },
 
-  shell: { openExternal: (url) => ipcRenderer.invoke('shell:open-external', url) },
+  ui: {
+    onOpenSettings:   (cb) => on('ui:open-settings',   cb),
+    onNewConnection:  (cb) => on('ui:new-connection',  cb),
+    onNewTab:         (cb) => on('ui:new-tab',         cb),
+    onCloseTab:       (cb) => on('ui:close-tab',       cb),
+    onClearTerminal:  (cb) => on('ui:clear-terminal',  cb),
+    onCommandPalette: (cb) => on('ui:command-palette', cb),
+    onToggleSftp:     (cb) => on('ui:toggle-sftp',     cb),
+    onSwitchTab:      (cb) => on('ui:switch-tab',      (_, idx) => cb(idx)),
+    onImport:         (cb) => on('ui:import',          cb),
+    onExport:         (cb) => on('ui:export',          cb),
+  },
 });
+
+function on(channel, cb) {
+  const fn = (_, ...args) => cb(...args);
+  ipcRenderer.on(channel, fn);
+  return () => ipcRenderer.removeListener(channel, fn);
+}
