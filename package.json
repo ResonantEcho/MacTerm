@@ -7,14 +7,14 @@
   "scripts": {
     "start": "concurrently \"npm run start:renderer\" \"wait-on http://localhost:3000 && npm run start:electron\"",
     "start:renderer": "react-scripts start",
-    "start:electron": "NODE_ENV=development electron .",
+    "start:electron": "cross-env NODE_ENV=development electron .",
     "build": "npm run build:renderer && npm run build:electron",
     "build:renderer": "react-scripts build",
     "build:electron": "electron-builder",
     "build:mac": "electron-builder --mac --universal",
     "build:mac:arm64": "electron-builder --mac --arm64",
     "build:mac:x64": "electron-builder --mac --x64",
-    "build:unsigned": "SKIP_NOTARIZE=true electron-builder --mac --universal",
+    "build:unsigned": "cross-env SKIP_NOTARIZE=true electron-builder --mac --universal",
     "pack": "electron-builder --dir",
     "create-icns": "bash scripts/create-icns.sh",
     "test": "react-scripts test"
@@ -22,18 +22,19 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "ssh2": "^1.15.0",
-    "@xterm/xterm": "^5.3.0",
-    "@xterm/addon-fit": "^0.8.0",
-    "@xterm/addon-web-links": "^0.9.0",
-    "react-vnc": "^3.4.1",
-    "ws": "^8.16.0",
+    "ssh2": "^1.17.0",
+    "@xterm/xterm": "^6.0.0",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/addon-web-links": "^0.12.0",
+    "react-vnc": "^3.2.0",
+    "ws": "^8.17.0",
     "electron-store": "^8.1.0",
     "keytar": "^7.9.0"
   },
   "devDependencies": {
     "@electron/notarize": "^2.3.0",
-    "concurrently": "^8.2.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^7.0.3",
     "electron": "^28.0.0",
     "electron-builder": "^24.6.4",
     "react-scripts": "5.0.1",
@@ -72,17 +73,8 @@
         "height": 380
       },
       "contents": [
-        {
-          "x": 140,
-          "y": 200,
-          "type": "file"
-        },
-        {
-          "x": 400,
-          "y": 200,
-          "type": "link",
-          "path": "/Applications"
-        }
+        { "x": 140, "y": 200, "type": "file" },
+        { "x": 400, "y": 200, "type": "link", "path": "/Applications" }
       ],
       "iconSize": 100
     },
